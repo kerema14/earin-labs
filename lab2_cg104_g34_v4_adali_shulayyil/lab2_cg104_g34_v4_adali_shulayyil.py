@@ -14,6 +14,7 @@ class CSP:
         self.constraints = constraints
         self.solution = None
         self.viz = []
+        self.viz_domains = []
 
     def print_sudoku(self, puzzle):
         """Prints the sudoku puzzle in a readable format"""
@@ -26,13 +27,20 @@ class CSP:
                 print(puzzle[i][j], end=" ")
             print()
 
-    def visualize(self):
+    def visualize(self,viz_domains=False):
         """Visualizes the steps of the solving algorithm"""
-        print("\n" + "*" * 7 + " Visualization " + "*" * 7)
-        for step, grid in enumerate(self.viz):
-            print(f"\nStep {step+1}:")
-            self.print_sudoku(grid)
-            print("-" * 30)
+        if viz_domains:
+            print("\n" + "*" * 7 + " Visualization with Domains " + "*" * 7)
+            for step, grid in enumerate(self.viz_domains):
+                print(f"\nStep {step+1}:")
+                self.print_sudoku(grid)
+                print("-" * 30)
+        else:
+            print("\n" + "*" * 7 + " Visualization " + "*" * 7)
+            for step, grid in enumerate(self.viz):
+                print(f"\nStep {step+1}:")
+                self.print_sudoku(grid)
+                print("-" * 30)
 
     def solve(self):
         """
@@ -93,7 +101,9 @@ class CSP:
         # If all variables are assigned, we're done
         if len(assignment) == len(self.variables):
             current_grid = self.create_grid_snapshot(assignment)
+            current_domains = self.create_grid_snapshot_with_domains(self.domains)
             self.viz.append(current_grid)
+            self.viz_domains.append(current_domains)
             return assignment
             
         # Select an unassigned variable
@@ -101,7 +111,9 @@ class CSP:
         
         # Create a grid snapshot for visualization
         current_grid = self.create_grid_snapshot(assignment)
+        current_domains = self.create_grid_snapshot_with_domains(self.domains)
         self.viz.append(current_grid)
+        self.viz_domains.append(current_domains)
         
         # Try assigning each value in var's domain
         for value in list(self.domains[var]):  # Use list to avoid modifying during iteration
@@ -158,7 +170,20 @@ class CSP:
             for value in values:
                 if value not in self.domains[var]:
                     self.domains[var].append(value)
-    
+    def create_grid_snapshot_with_domains(self, domains:dict):
+        """
+        Creates a grid snapshot for visualization with domains
+        """
+        # Create empty grid
+        grid = [[0 for _ in range(9)] for _ in range(9)]
+        
+        # Fill in values from the domains
+        for (i, j), values in domains.items():
+            if len(values) == 1:
+                grid[i][j] = values[0]
+            else:
+                grid[i][j] = values
+        return grid
     def create_grid_snapshot(self, assignment:dict):
         """
         Creates a grid snapshot for visualization
@@ -337,10 +362,10 @@ puzzles = [
 
 
 
-# Test with a more difficult puzzle
-def test_puzzle(puzzle:List[List[int]],visualize:bool=True):
+
+def test_puzzle(puzzle:List[List[int]],visualize:bool=True,visualize_domains:bool=False):
     print("\n\n" + "=" * 30)
-    print("TESTING DIFFICULT PUZZLE")
+    print("TESTING PUZZLE")
     print("=" * 30)
     
     variables, domains, constraints = create_sudoku_csp(puzzle)
@@ -350,7 +375,7 @@ def test_puzzle(puzzle:List[List[int]],visualize:bool=True):
     csp.print_sudoku(puzzle)
     
     print('\nSolving...')
-    sol, _ = csp.solve()
+    sol, vis = csp.solve()
     
     solution = [[0 for i in range(9)] for i in range(9)]
     if sol is not None:
@@ -365,11 +390,11 @@ def test_puzzle(puzzle:List[List[int]],visualize:bool=True):
         csp.print_sudoku(solution)
         
         if visualize:
-            csp.visualize()
+            csp.visualize(viz_domains=visualize_domains)
     else:
         print("Solution does not exist")
 
 for puzzle in puzzles:
-    test_puzzle(puzzle)
+    test_puzzle(puzzle,visualize=True,visualize_domains=False)
     wait = input("Press Enter to continue...")
 
