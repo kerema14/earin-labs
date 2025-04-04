@@ -100,7 +100,7 @@ class GeneticAlgorithm:
             
         return individuals
 
-    def evolve(self, seed: int) -> Tuple[List]:
+    def evolve(self, seed: int):
         # Run the genetic algorithm and return the lists that contain the best solution for each generation,
         #   the best fitness for each generation and average fitness for each generation
         set_seed(seed)

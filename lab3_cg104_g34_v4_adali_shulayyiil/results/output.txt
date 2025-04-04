@@ -1,0 +1,77 @@
+======= EXPERIMENT 1: PARAMETER TUNING =======
+Testing parameters: {'population_size': 1000, 'mutation_rate': 0.1, 'mutation_strength': 0.1, 'crossover_rate': 0.7, 'num_generations': 35}
+Testing parameters: {'population_size': 2000, 'mutation_rate': 0.1, 'mutation_strength': 0.1, 'crossover_rate': 0.7, 'num_generations': 20}
+Testing parameters: {'population_size': 1000, 'mutation_rate': 0.2, 'mutation_strength': 0.1, 'crossover_rate': 0.7, 'num_generations': 20}
+Testing parameters: {'population_size': 1000, 'mutation_rate': 0.1, 'mutation_strength': 0.2, 'crossover_rate': 0.7, 'num_generations': 30}
+Testing parameters: {'population_size': 1000, 'mutation_rate': 0.1, 'mutation_strength': 0.1, 'crossover_rate': 0.8, 'num_generations': 20}
+Testing parameters: {'population_size': 5000, 'mutation_rate': 0.1, 'mutation_strength': 0.1, 'crossover_rate': 0.7, 'num_generations': 10}
+Testing parameters: {'population_size': 5000, 'mutation_rate': 0.1, 'mutation_strength': 0.1, 'crossover_rate': 0.7, 'num_generations': 30}
+
+Parameter Tuning Results:
+   population_size  mutation_rate  mutation_strength  crossover_rate                             best_solution  best_fitness
+0             1000            0.1                0.1             0.7   (0.9999996542464764, 2.999998824972314)  1.075134e-11
+1             2000            0.1                0.1             0.7  (1.0021580241677646, 2.9980618248543083)  8.606926e-06
+2             1000            0.2                0.1             0.7   (1.0000000000025677, 2.999999999999109)  1.863452e-23
+3             1000            0.1                0.2             0.7   (0.9999996542464764, 2.999998824972314)  1.075134e-11
+4             1000            0.1                0.1             0.8   (0.999968949257549, 3.0000027636116866)  4.172433e-09
+5             5000            0.1                0.1             0.7  (1.0000000043881847, 2.9999999968467637)  3.529945e-17
+6             5000            0.1                0.1             0.7  (1.0000000000000004, 2.9999999999999996)  0.000000e+00
+
+Best parameter combination: {'population_size': 5000, 'mutation_rate': 0.1, 'mutation_strength': 0.1, 'crossover_rate': 0.7, 'num_generations': 50}
+Best fitness value: 0.0
+
+======= EXPERIMENT 2: RANDOMNESS ANALYSIS =======
+
+Results with different population sizes:
+   population_size  best_fitness_min  best_fitness_avg  best_fitness_std
+0             5000      0.000000e+00      0.000000e+00      0.000000e+00
+1             2500      4.509820e-20      3.474634e-11      6.641141e-11
+2             1250      9.286641e-21      3.112454e-07      6.048276e-07
+3              500      6.103381e-20      1.138530e-05      1.946321e-05
+
+======= EXPERIMENT 3: CROSSOVER IMPACT =======
+Testing crossover rate: 0.0
+Testing crossover rate: 0.1
+Testing crossover rate: 0.2
+Testing crossover rate: 0.3
+Testing crossover rate: 0.5
+Testing crossover rate: 0.7
+Testing crossover rate: 0.9
+Testing crossover rate: 1.0
+
+Crossover Impact Summary:
+       crossover_rate  avg_best_fitness
+0  Crossover Rate 0.0      2.053052e-02
+1  Crossover Rate 0.1      7.493171e-06
+2  Crossover Rate 0.2      1.321848e-10
+3  Crossover Rate 0.3      5.258879e-08
+4  Crossover Rate 0.5      7.867848e-10
+5  Crossover Rate 0.7      0.000000e+00
+6  Crossover Rate 0.9      2.351346e-10
+7  Crossover Rate 1.0      7.528326e-17
+
+======= EXPERIMENT 4: MUTATION AND CONVERGENCE =======
+Testing mutation config: Rate 0.0, Strength 0.0
+Testing mutation config: Rate 0.05, Strength 0.05
+Testing mutation config: Rate 0.1, Strength 0.1
+Testing mutation config: Rate 0.2, Strength 0.2
+Testing mutation config: Rate 0.3, Strength 0.3
+Testing mutation config: Rate 0.5, Strength 0.5
+Testing mutation config: Rate 0.7, Strength 0.7
+Testing mutation config: Rate 0.9, Strength 0.9
+Testing mutation config: Rate 1, Strength 1
+
+Mutation and Convergence Summary:
+   mutation_rate  mutation_strength  avg_best_fitness
+0           0.00               0.00      5.713731e-10
+1           0.05               0.05      2.610252e-25
+2           0.10               0.10      0.000000e+00
+3           0.20               0.20      2.413914e-29
+4           0.30               0.30      1.603802e-26
+5           0.50               0.50      8.742894e-10
+6           0.70               0.70      6.301421e-27
+7           0.90               0.90      0.000000e+00
+8           1.00               1.00      1.194167e-12
+
+======= ALL EXPERIMENTS COMPLETED =======
+Results are saved in the 'results' directory.

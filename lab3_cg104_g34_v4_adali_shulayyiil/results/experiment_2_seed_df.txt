@@ -1,0 +1,7 @@
+EXPERIMENT SUMMARY STATISTICS SEED DIFF.
+===========================
+
+Best solution across all seeds: (0.9999999999999998, 3.0)
+Best fitness value: 0.0
+Average fitness across seeds: 0.0
+Standard deviation: 0.0
