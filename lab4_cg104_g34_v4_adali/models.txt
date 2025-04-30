@@ -1,5 +1,5 @@
-1 Logistic Regression
-2 Decision Trees
+1 Logistic Regression - Decision
+2 Decision Trees - Decision
 3 Naive Bayes
 4 Support Vector Machines (SVMs)
 5 Random Forests

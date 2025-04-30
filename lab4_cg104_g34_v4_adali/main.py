@@ -1,14 +1,12 @@
-import math
+#Kerem Adalı, only and only.
 import random
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-from helpers import substrings_in_string,replace_titles
+from helpers import preprocess_data_test, substrings_in_string,replace_titles
 from sklearn.model_selection import cross_val_score, train_test_split
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier 
-from sklearn import preprocessing
-from sklearn.model_selection import GridSearchCV
 from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score
 import seaborn as sns
 
@@ -29,51 +27,25 @@ def preprocess_data(df:pd.DataFrame):
                     'Dr', 'Ms', 'Mlle','Col', 'Capt', 'Mme', 'Countess',
                     'Don', 'Jonkheer']
     df['Title']=df['Name'].map(lambda x: substrings_in_string(x, title_list))
-    df['Title']=df.apply(replace_titles, axis=1)
-    df['is_wife'] = df['Title'].map(lambda x: 1 if x == 'Mrs' else 0)
-    df['is_husband'] = df['Title'].map(lambda x: 1 if x == 'Mr' else 0)
-    cabin_list = ['A', 'B', 'C', 'D', 'E', 'F', 'T', 'G', 'Unknown']
+    df['Title']=df.apply(replace_titles, axis=1) #categorize titles
+    df['is_wife'] = df['Title'].map(lambda x: 1 if x == 'Mrs' else 0) #add a column to indicate if the passenger is a wife
+    cabin_list = ['A', 'B', 'C', 'D', 'E', 'F', 'T', 'G', 'Unknown'] #list of cabin letters
     df['Cabin'] = df['Cabin'].astype(str)
     df['Deck']=df['Cabin'].map(lambda x: substrings_in_string(x, cabin_list))
     df['Family_Size'] = df['SibSp'] + df['Parch']
     df['Age'].fillna(df['Age'].median(), inplace=True)
-    feature_names = ["Pclass","Age","Sex","Family_Size","Deck","Title","is_wife","is_husband"]
-    features = pd.get_dummies(df[feature_names])
+    feature_names = ["Pclass","Age","Sex","Family_Size","Deck","Title","is_wife"]
+    features = pd.get_dummies(df[feature_names]) #get dummies for categorical variables
     data_scaled = features.copy()
     
     for column in data_scaled.columns:
-        data_scaled[column] = (data_scaled[column] - data_scaled[column].mean()) / data_scaled[column].std(ddof=0)
+        data_scaled[column] = (data_scaled[column] - data_scaled[column].mean()) / data_scaled[column].std(ddof=0) #normalize the data
     
 
     
     return data_scaled,df["target"]
 
-def preprocess_data_test(df:pd.DataFrame):
-    
-    title_list=['Mrs', 'Mr', 'Master', 'Miss', 'Major', 'Rev',
-                    'Dr', 'Ms', 'Mlle','Col', 'Capt', 'Mme', 'Countess',
-                    'Don', 'Jonkheer']
-    df['Title']=df['Name'].map(lambda x: substrings_in_string(x, title_list))
-    df['Title']=df.apply(replace_titles, axis=1)
-    df['is_wife'] = df['Title'].map(lambda x: 1 if x == 'Mrs' else 0)
-    df['is_husband'] = df['Title'].map(lambda x: 1 if x == 'Mr' else 0)
-    cabin_list = ['A', 'B', 'C', 'D', 'E', 'F', 'T', 'G', 'Unknown']
-    df['Cabin'] = df['Cabin'].astype(str)
-    df['Deck']=df['Cabin'].map(lambda x: substrings_in_string(x, cabin_list))
-    df['Family_Size'] = df['SibSp'] + df['Parch']
-    df['Age'].fillna(df['Age'].median(), inplace=True)
-    feature_names = ["Pclass","Age","Sex","Family_Size","Deck","Title","is_wife","is_husband"]
-    features = pd.get_dummies(df[feature_names])
-    
-    data_scaled = features.copy()
-    
-    
-    for column in data_scaled.columns:
-        data_scaled[column] = (data_scaled[column] - data_scaled[column].mean()) / data_scaled[column].std(ddof=0)
-    
 
-    
-    return data_scaled
 
 
 def predict_kaggle():
@@ -81,8 +53,9 @@ def predict_kaggle():
     test_csv = pd.read_csv("titanic/test.csv")
     X, y = preprocess_data(df)
     Z = preprocess_data_test(test_csv)
-    Z = Z.reindex(columns=X.columns, fill_value=0)
-    logreg = LogisticRegression(C=0.5, class_weight=None, dual=False, fit_intercept=True, intercept_scaling=1, l1_ratio=0.1, penalty='l1', random_state=42, solver='saga', tol=0.01, warm_start=True) 
+    Z = Z.reindex(columns=X.columns, fill_value=False)
+    logreg = LogisticRegression(random_state=SEED, C=0.25, class_weight=None, fit_intercept=True, intercept_scaling=1, penalty='l1', solver='liblinear', tol=0.0001, warm_start=True) 
+    #{'C': 0.25, 'class_weight': None, 'fit_intercept': True, 'intercept_scaling': 1, 'penalty': 'l1', 'random_state': 42, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': True}
 
     final_logreg = logreg.fit(X, y)
     predictions1 = final_logreg.predict(Z)
@@ -108,8 +81,8 @@ def main(seed):
     )
 
     # DONE Define the models
-    logreg = LogisticRegression(C=0.5, class_weight=None, dual=False, fit_intercept=True, intercept_scaling=1, l1_ratio=0.1, penalty='l1', random_state=seed, solver='saga', tol=0.01, warm_start=True) 
-    #best params: {'C': 0.5, 'class_weight': None, 'dual': False, 'fit_intercept': True, 'intercept_scaling': 1, 'l1_ratio': 0.1, 'penalty': 'l1', 'random_state': 42, 'solver': 'saga', 'tol': 0.01, 'warm_start': True}
+    logreg = LogisticRegression(random_state=seed, C=0.25, class_weight=None, fit_intercept=True, intercept_scaling=1, penalty='l1', solver='liblinear', tol=0.0001, warm_start=True) 
+    #best params: {'C': 0.25, 'class_weight': None, 'fit_intercept': True, 'intercept_scaling': 1, 'penalty': 'l1', 'random_state': 42, 'solver': 'liblinear', 'tol': 0.0001, 'warm_start': True}
     
     dtree = DecisionTreeClassifier(random_state=seed,ccp_alpha=0.0, class_weight=None, criterion='gini', max_depth=20, max_features=None, min_impurity_decrease=0.0, min_samples_leaf=2, min_samples_split=20, splitter='random')
     #best params: {'ccp_alpha': 0.0, 'class_weight': None, 'criterion': 'gini', 'max_depth': 20, 'max_features': None, 'min_impurity_decrease': 0.0, 'min_samples_leaf': 2, 'min_samples_split': 20, 'random_state': 42, 'splitter': 'random'}
@@ -173,11 +146,12 @@ def main(seed):
 
 if __name__ == "__main__":
     # Set seed for reproducibility
-    
+    """
     print("Creating predictions for Kaggle submission...")
     predict_kaggle()
     print("Predictions created. Press Enter to continue...")
     input()
+    """
     
     logreg_f1 = []
     dtree_f1 = []
@@ -188,7 +162,7 @@ if __name__ == "__main__":
     logreg_recall = []
     dtree_recall = []
     overfitting_count = 0
-    for a in range(1,30):
+    for a in range(1,30): #accumulate results accross 30 different seed iterations
         seeda = random.randint(1,10000)
         set_seed(seeda)
         lgres,dtres,ofc = main(seed=seeda)
@@ -209,11 +183,8 @@ if __name__ == "__main__":
     print("Logistic Regression Recalls mean: ", np.mean(logreg_recall))
     print("Logistic Regression Precisions mean: ", np.mean(logreg_precision))
     print("\nDecision Tree F1 Scores mean: ", np.mean(dtree_f1))
-    
     print("Decision Tree Accuracies mean: ", np.mean(dtree_accuracy))
-    
     print("Decision Tree Precisions mean: ", np.mean(dtree_precision))
-    
     print("Decision Tree Recalls mean: ", np.mean(dtree_recall))
     # Prepare DataFrames for the metrics
     df_f1 = pd.DataFrame({

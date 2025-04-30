@@ -66,7 +66,7 @@ param_grid = [
 ]
 
 logreg = GridSearchCV(
-    LogisticRegression(max_iter=1000), 
+    LogisticRegression(max_iter=10000), 
     param_grid,
     cv=4, 
     scoring='accuracy', 
