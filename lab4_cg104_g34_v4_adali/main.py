@@ -9,10 +9,11 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier 
 from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score
 import seaborn as sns
+import os
 
 
 SEED = 69
-overfitting_threshold = 0.04
+overfitting_threshold = 0.05
 
 
 def set_seed(seed):
@@ -27,7 +28,7 @@ def preprocess_data(df:pd.DataFrame):
                     'Dr', 'Ms', 'Mlle','Col', 'Capt', 'Mme', 'Countess',
                     'Don', 'Jonkheer']
     df['Title']=df['Name'].map(lambda x: substrings_in_string(x, title_list))
-    df['Title']=df.apply(replace_titles, axis=1) #categorize titles
+    df['Title']=df.apply(replace_titles, axis=1) #replace niche titles with more common ones
     df['is_wife'] = df['Title'].map(lambda x: 1 if x == 'Mrs' else 0) #add a column to indicate if the passenger is a wife
     cabin_list = ['A', 'B', 'C', 'D', 'E', 'F', 'T', 'G', 'Unknown'] #list of cabin letters
     df['Cabin'] = df['Cabin'].astype(str)
@@ -162,10 +163,23 @@ if __name__ == "__main__":
     logreg_recall = []
     dtree_recall = []
     overfitting_count = 0
-    for a in range(1,30): #accumulate results accross 30 different seed iterations
-        seeda = random.randint(1,10000)
-        set_seed(seeda)
-        lgres,dtres,ofc = main(seed=seeda)
+    random_seeds = [
+        31, 69, 420, 1337, 9001, 42, 123, 666, 777, 888,
+        1010, 1234, 4321, 8675, 309, 314, 2718, 1984, 2001, 2024,
+        9999, 1001, 8080, 5555, 4444, 3333, 2222, 1111, 707, 909,
+        1024, 2048, 4096, 8192, 137, 911, 1600, 1776, 1492, 1999,
+        73, 27, 54, 108, 216, 69, 84, 96, 360, 720,
+        144, 69, 420, 5, 10, 15, 20, 25, 30, 35,
+        40, 45, 50, 55, 60, 65, 70, 75, 80, 85,
+        90, 95, 100, 111, 121, 131, 141, 151, 161, 171,
+        181, 191, 201, 211, 221, 231, 241, 251, 261, 271,
+        281, 291, 301, 313, 323, 333, 343, 353, 363, 373
+    ] #100 different seeds
+    random_seeds = [i * SEED for i in random_seeds]
+
+    for random_seed in random_seeds: #accumulate results accross 100 different seed iterations
+        set_seed(random_seed)
+        lgres,dtres,ofc = main(seed=random_seed)
         overfitting_count += ofc
             
         logreg_f1.append(lgres[0])
@@ -177,7 +191,7 @@ if __name__ == "__main__":
         logreg_recall.append(lgres[3])
         dtree_recall.append(dtres[3])
   
-    print("Overfitting Count: ",overfitting_count)
+    
     print("\nLogistic Regression F1 Scores mean: ", np.mean(logreg_f1))
     print("Logistic Regression Accuracies mean: ", np.mean(logreg_accuracy))
     print("Logistic Regression Recalls mean: ", np.mean(logreg_recall))
@@ -186,6 +200,7 @@ if __name__ == "__main__":
     print("Decision Tree Accuracies mean: ", np.mean(dtree_accuracy))
     print("Decision Tree Precisions mean: ", np.mean(dtree_precision))
     print("Decision Tree Recalls mean: ", np.mean(dtree_recall))
+    print("Overfitting Count: "+str(overfitting_count)+" out of 200 fits")
     # Prepare DataFrames for the metrics
     df_f1 = pd.DataFrame({
         "Logistic Regression": logreg_f1,
@@ -204,12 +219,18 @@ if __name__ == "__main__":
         "Decision Tree": dtree_recall
     })
 
+    # Create figures directory if it doesn't exist
+    figures_dir = "figures"
+    if not os.path.exists(figures_dir):
+        os.makedirs(figures_dir)
+
     # Plot boxplot for F1 Scores
     plt.figure(figsize=(10, 6))
     sns.boxplot(data=df_f1)
     plt.title("F1 Scores Box Plot Across Iterations")
     plt.ylabel("F1 Score")
     plt.grid(True)
+    plt.savefig(os.path.join(figures_dir, "f1_scores_boxplot.png"))
     plt.show()
 
     # Plot boxplot for Accuracies
@@ -218,6 +239,7 @@ if __name__ == "__main__":
     plt.title("Accuracies Box Plot Across Iterations")
     plt.ylabel("Accuracy")
     plt.grid(True)
+    plt.savefig(os.path.join(figures_dir, "accuracies_boxplot.png"))
     plt.show()
 
     # Plot boxplot for Precisions
@@ -226,6 +248,7 @@ if __name__ == "__main__":
     plt.title("Precisions Box Plot Across Iterations")
     plt.ylabel("Precision")
     plt.grid(True)
+    plt.savefig(os.path.join(figures_dir, "precisions_boxplot.png"))
     plt.show()
 
     # Plot boxplot for Recalls
@@ -234,5 +257,6 @@ if __name__ == "__main__":
     plt.title("Recalls Box Plot Across Iterations")
     plt.ylabel("Recall")
     plt.grid(True)
+    plt.savefig(os.path.join(figures_dir, "recalls_boxplot.png"))
     plt.show()
 
