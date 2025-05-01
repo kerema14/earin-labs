@@ -1,0 +1,37 @@
+Implement a multilayer perceptron for image classification. The neural network
+should be trained with the mini-batch gradient descent method. Remember to
+split the dataset into training and validation sets.
+The main point of this task is to evaluate how various components and hy￾perparameters of a neural network and the training process affect the network’s
+performance in terms of its ability to converge, the speed of convergence, and
+final accuracy on the training and validation sets. For evaluation, please create
+plots visualizing:
+• The loss value for every learning step,
+• Accuracy on the training and validation set after each epoch.
+Make sure to include conclusions and observations based on the conducted
+experiments in your report.
+The details are described in your variant of the project.
+
+
+
+https://pytorch.org/vision/stable/generated/torchvision.datasets.FashionMNIST.html#torchvision.datasets.FashionMNIST
+Use the FashionMNIST dataset. Evaluate at least 3 different numbers/values/types
+of:
+• Learning rate,
+• Mini-batch size (including a batch containing only 1 example),
+• Number of hidden layers (including 0 hidden layers - a linear model),
+• Width (number of neurons in hidden layers),
+• Loss functions (e.g., Mean Squared Error, Mean Absolute Error, Cross
+Entropy).
+
+2 Tips
+• The network can be implemented with a library offering neural network
+layers, optimizers, and error backpropagation. However, you must imple￾ment the learning procedure yourself – you cannot use libraries such as
+fast.ai or lightning that train the model with model.fit(). I highly recom￾mend using PyTorch. This course may be useful for starting.
+• Setting a fixed seed will make your results reproducible across different
+runs. Check this article or others for details.
+• To input an image (28 x 28 matrix for all the given datasets) into the
+multilayer perceptron network, you need to flatten the image - represent
+it as a vector.
+• Training of neural networks can take a while, and you will train several of
+them in this assessment. Keep this in mind and do not start working on
+the lab at the last minute!
