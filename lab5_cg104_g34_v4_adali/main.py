@@ -16,6 +16,7 @@ parser.add_argument("--batch_size", type=int, required=True)
 parser.add_argument("--hidden_layers", type=int, required=True)
 parser.add_argument("--width", type=int, required=True)
 parser.add_argument("--loss_fn", type=str, choices=["mse", "mae", "crossentropy"], required=True)
+parser.add_argument("--epochs", type=int, default=100)
 args = parser.parse_args()
 
 # Seed
@@ -72,7 +73,7 @@ loss_fn = loss_fn.to(device)
 optimizer = optim.Adam(model.parameters(), lr=args.lr)
 
 # Training Loop
-n_epochs = 100
+n_epochs = args.epochs
 losses = pd.DataFrame(columns=["Learning Step", "Loss"])
 train_df = pd.DataFrame(columns=["Epoch", "Loss", "Train Accuracy", "Test Accuracy", "Time"])
 early_stopper = EarlyStopping(tolerance=5, min_delta=0.05)
