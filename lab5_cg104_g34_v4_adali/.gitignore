@@ -1,2 +1,3 @@
 # Ignore the dataset directory
 /data/
+/training_results/helper_s

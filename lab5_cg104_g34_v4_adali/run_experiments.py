@@ -2,16 +2,19 @@
 import os
 
 experiments = [
-   
-    {"epochs": 300, "lr": 0.0000205, "batch_size": 512, "hidden_layers": 2, "width": 4192, "loss_fn": "crossentropy"},
-    """
-    {"lr": 0.0000235, "batch_size": 512, "hidden_layers": 1, "width": 128, "loss_fn": "mae"},
-    {"lr": 0.0000235, "batch_size": 512, "hidden_layers": 1, "width": 128, "loss_fn": "crossentropy"},  # mainly for testing
-    {"lr": 0.00005, "batch_size": 16, "hidden_layers": 0, "width": 0, "loss_fn": "croessentropy"},
-    {"lr": 0.0000235, "batch_size": 16, "hidden_layers": 2, "width": 256, "loss_fn": "mae"},
-    {"lr": 0.0001, "batch_size": 8, "hidden_layers": 1, "width": 512, "loss_fn": "crossentropy"},
-    {"lr": 0.00005, "batch_size": 1, "hidden_layers": 0, "width": 0, "loss_fn": "mse"},
-    """
+    #lr: 5e-5, 2.05e-5, 2.35e-5, 2.5e-5, 3.0e-5,1.0e-4, 2.35e-4
+
+    
+    
+    {"epochs": 305, "lr": 0.0000205, "batch_size": 1, "hidden_layers": 1, "width": 128, "loss_fn": "crossentropy"},
+    {"epochs": 305, "lr": 0.0000205, "batch_size": 8, "hidden_layers": 1, "width": 128, "loss_fn": "crossentropy"},
+    {"epochs": 305, "lr": 0.0000205, "batch_size": 16, "hidden_layers": 1, "width": 128, "loss_fn": "crossentropy"},
+    {"epochs": 305, "lr": 0.0000205, "batch_size": 64, "hidden_layers": 1, "width": 128, "loss_fn": "crossentropy"},
+    {"epochs": 305, "lr": 0.0000205, "batch_size": 256, "hidden_layers": 1, "width": 128, "loss_fn": "crossentropy"},
+    {"epochs": 305, "lr": 0.0000205, "batch_size": 512, "hidden_layers": 1, "width": 128, "loss_fn": "crossentropy"},
+
+    
+    
     # Additional parameter sets
     
 ]

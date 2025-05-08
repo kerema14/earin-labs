@@ -8,7 +8,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torchvision.datasets import FashionMNIST
 
-from helpers import calculate_accuracy,EarlyStopping
+from helpers import calculate_accuracy
 # Argument Parsing
 parser = argparse.ArgumentParser()
 parser.add_argument("--lr", type=float, required=True)
@@ -24,6 +24,7 @@ SEED = 69
 random.seed(SEED)
 np.random.seed(SEED)
 torch.manual_seed(SEED)
+
 
 # Data
 dataset = FashionMNIST(root='./data', train=True, download=True)
@@ -76,10 +77,10 @@ optimizer = optim.Adam(model.parameters(), lr=args.lr)
 n_epochs = args.epochs
 losses = pd.DataFrame(columns=["Learning Step", "Loss"])
 train_df = pd.DataFrame(columns=["Epoch", "Loss", "Train Accuracy", "Test Accuracy", "Time"])
-early_stopper = EarlyStopping(tolerance=5, min_delta=0.05)
+
 min_delta_loss = 0.0003
 consecutive_no_improvement = 0
-patience = 3
+patience = 10
 best_epoch_loss = float("inf")
 for epoch in range(n_epochs):
     model.train()
@@ -113,10 +114,7 @@ for epoch in range(n_epochs):
 
     train_df.loc[epoch] = [epoch+1, loss.item(), acc, val_acc, epoch_time]
     print(f"Epoch {epoch+1}/{n_epochs} - Loss: {loss.item():.4f}, Train Accuracy: {acc:.4f}, Validation Accuracy: {val_acc:.4f}, Time: {epoch_time:.2f}s")
-    early_stopper(acc, val_acc)
-    if early_stopper.early_stop:
-      print("We are stopping early at epoch:", i)
-      break
+    
     current_epoch_loss = loss.item()
     if best_epoch_loss - current_epoch_loss >= min_delta_loss:
         best_epoch_loss = current_epoch_loss
@@ -127,13 +125,14 @@ for epoch in range(n_epochs):
             print(f"Early stopping at epoch {epoch+1} as the loss did not improve by at least {min_delta_loss} for {patience} consecutive epochs.")
             break
 
-
+print(f"Prediction results on test set: {calculate_accuracy(y_test, model(X_test).argmax(dim=1)):.4f}")
+train_df["Final Test Accuracy"] = calculate_accuracy(y_test, model(X_test).argmax(dim=1))
 # Save results
 params = f"_{SEED}_{n_epochs}_{args.batch_size}_{args.lr}_{args.loss_fn}_{args.hidden_layers}hl_{args.width}w"
 train_results_path = f"training_results/result_{params}"
 os.makedirs(train_results_path, exist_ok=True)
 train_df.to_csv(f"{train_results_path}/train_df.csv", index=False)
-print(f"Prediction results on test set: {calculate_accuracy(y_test, model(X_test).argmax(dim=1)):.4f}")
+
 # Plot loss vs learning step
 plt.figure(figsize=(12, 5))
 plt.plot(losses["Loss"], label="Loss")
