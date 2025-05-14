@@ -125,6 +125,15 @@ for epoch in range(n_epochs):
             print(f"Early stopping at epoch {epoch+1} as the loss did not improve by at least {min_delta_loss} for {patience} consecutive epochs.")
             break
 
+
+
+
+
+
+
+
+
+
 print(f"Prediction results on test set: {calculate_accuracy(y_test, model(X_test).argmax(dim=1)):.4f}")
 train_df["Final Test Accuracy"] = calculate_accuracy(y_test, model(X_test).argmax(dim=1))
 # Save results
